@@ -15,9 +15,13 @@ const missingConfig = Object.entries(requiredConfig)
   .filter(([, value]) => !value)
   .map(([key]) => key)
 
-if (missingConfig.length > 0) {
-  throw new Error(`Firebase configuration is missing: ${missingConfig.join(', ')}`)
-}
+// Do not throw during Next.js static generation. Vercel does not automatically
+// receive local .env.local values; the client displays this error at runtime.
+// Do not throw during Next.js static generation. Vercel does not automatically
+// receive local .env.local values; the client displays this error at runtime.
+export const firebaseConfigError = missingConfig.length > 0
+  ? `Firebase configuration is missing: ${missingConfig.join(', ')}`
+  : null
 
 const app = getApps().length > 0 ? getApp() : initializeApp(requiredConfig)
 
