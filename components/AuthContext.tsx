@@ -21,15 +21,11 @@ function errorMessage(error: unknown, fallback: string) {
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+  const [loading, setLoading] = useState(!firebaseConfigError)
+  const [error, setError] = useState<string | null>(firebaseConfigError)
 
   useEffect(() => {
-    if (firebaseConfigError) {
-      setError(firebaseConfigError)
-      setLoading(false)
-      return
-    }
+    if (firebaseConfigError) return
 
     const unsubscribe = onAuthStateChanged(getFirebaseAuth(), (u) => {
       setUser(u)
