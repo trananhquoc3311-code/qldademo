@@ -1,4 +1,5 @@
 import './globals.css'
+import AuthProvider from '@/components/AuthProvider'
 
 export const metadata = {
   title: 'Dashboard Báo Cáo',
@@ -8,7 +9,9 @@ export const metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="vi" className="dark">
-      <body>{children}</body>
+      <body>
+        <AuthProvider>{children}</AuthProvider>
+      </body>
     </html>
   )
 }

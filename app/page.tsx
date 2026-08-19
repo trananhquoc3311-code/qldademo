@@ -3,6 +3,9 @@
 import { useMemo, useState } from 'react'
 import { Bell, CheckCircle2, ClipboardList, FileUp, Filter, LayoutDashboard, Menu, Search, ShieldAlert, Upload, Users, X } from 'lucide-react'
 import { reports, reminders, weeklyTrend, type ReportStatus } from '../lib/data'
+import { useAuth } from '@/components/AuthContext'
+import { ProtectedRoute } from '@/components/ProtectedRoute'
+import { UserMenu } from '@/components/UserMenu'
 
 const statusClasses: Record<ReportStatus, string> = {
   'Đã nhận': 'bg-emerald-400/10 text-emerald-300',
@@ -16,6 +19,15 @@ function StatusBadge({ status }: { status: ReportStatus }) {
 }
 
 export default function DashboardPage() {
+  return (
+    <ProtectedRoute>
+      <DashboardContent />
+    </ProtectedRoute>
+  )
+}
+
+function DashboardContent() {
+  const { user, logout } = useAuth()
   const [query, setQuery] = useState('')
   const [status, setStatus] = useState<'Tất cả' | ReportStatus>('Tất cả')
   const [selectedId, setSelectedId] = useState(reports[0]?.id ?? '')
@@ -52,7 +64,7 @@ export default function DashboardPage() {
         </aside>
 
         <section className="min-w-0 flex-1">
-          <header className="border-b border-white/10 bg-[#0d1426] px-5 py-4 lg:px-8"><div className="mx-auto flex max-w-[1400px] items-center justify-between"><div className="flex items-center gap-3"><button className="lg:hidden" onClick={() => setMobileMenu(true)} aria-label="Mở menu"><Menu size={20} /></button><div><p className="text-xs text-slate-500">Thứ Ba, 18 tháng 8, 2026</p><h1 className="mt-1 text-xl font-semibold">Tổng quan báo cáo</h1></div></div><Bell className="text-slate-400" size={19} /></div></header>
+          <header className="border-b border-white/10 bg-[#0d1426] px-5 py-4 lg:px-8"><div className="mx-auto flex max-w-[1400px] items-center justify-between"><div className="flex items-center gap-3"><button className="lg:hidden" onClick={() => setMobileMenu(true)} aria-label="Mở menu"><Menu size={20} /></button><div><p className="text-xs text-slate-500">Thứ Ba, 18 tháng 8, 2026</p><h1 className="mt-1 text-xl font-semibold">Tổng quan báo cáo</h1></div></div><div className="flex items-center gap-4"><span className="hidden text-xs text-slate-400 sm:block">{user?.email}</span><UserMenu /><Bell className="text-slate-400" size={19} /></div></div></header>
 
           <div className="mx-auto max-w-[1400px] space-y-6 p-5 lg:p-8">
             <div className="flex flex-col justify-between gap-4 md:flex-row md:items-end"><div><p className="text-sm text-slate-400">Theo dõi tiến độ tiếp nhận và xử lý</p><h2 className="mt-1 text-2xl font-semibold">Hiệu suất tuần này</h2></div><label className="flex items-center gap-2 rounded-xl border border-white/10 px-3 py-2 text-sm text-slate-300"><Filter size={15} className="text-cyan-300" /> Tuần này <select className="bg-transparent outline-none"><option>18/08 - 24/08/2026</option></select></label></div>
