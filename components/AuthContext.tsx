@@ -16,7 +16,7 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
 function errorMessage(error: unknown, fallback: string) {
-  return error instanceof FirebaseError || error instanceof Error ? error.message : fallback
+  return error instanceof Error ? error.message : fallback
 }
 
 export function AuthProvider({ children }: { children: ReactNode }) {

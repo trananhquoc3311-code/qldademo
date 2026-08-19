@@ -27,7 +27,7 @@ export default function DashboardPage() {
 }
 
 function DashboardContent() {
-  const { user, logout } = useAuth()
+  const { user } = useAuth()
   const [query, setQuery] = useState('')
   const [status, setStatus] = useState<'Tất cả' | ReportStatus>('Tất cả')
   const [selectedId, setSelectedId] = useState(reports[0]?.id ?? '')
