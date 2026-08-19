@@ -1,7 +1,7 @@
 'use client'
 
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react'
-import { auth } from '../lib/firebase'
+import { firebaseConfigError, getFirebaseAuth } from '../lib/firebase'
 import { onAuthStateChanged, User } from 'firebase/auth'
 
 interface AuthContextType {
@@ -25,7 +25,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (u) => {
+    if (firebaseConfigError) {
+      setError(firebaseConfigError)
+      setLoading(false)
+      return
+    }
+
+    const unsubscribe = onAuthStateChanged(getFirebaseAuth(), (u) => {
       setUser(u)
       setLoading(false)
       setError(null)
@@ -39,7 +45,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setLoading(true)
       setError(null)
       const { signInWithEmailAndPassword } = await import('firebase/auth')
-      await signInWithEmailAndPassword(auth, email, password)
+      await signInWithEmailAndPassword(getFirebaseAuth(), email, password)
     } catch (error: unknown) {
       setError(errorMessage(error, 'Login failed'))
       throw error
@@ -54,7 +60,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setError(null)
       const { GoogleAuthProvider, signInWithPopup } = await import('firebase/auth')
       const provider = new GoogleAuthProvider()
-      await signInWithPopup(auth, provider)
+      await signInWithPopup(getFirebaseAuth(), provider)
     } catch (error: unknown) {
       setError(errorMessage(error, 'Google login failed'))
       throw error
@@ -66,7 +72,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const logout = async () => {
     try {
       setLoading(true)
-      await auth.signOut()
+      await getFirebaseAuth().signOut()
     } catch (error: unknown) {
       setError(errorMessage(error, 'Logout failed'))
       throw error

@@ -1,8 +1,8 @@
-import { getApp, getApps, initializeApp } from 'firebase/app'
-import { getAuth } from 'firebase/auth'
-import { getFirestore } from 'firebase/firestore'
+import { getApp, getApps, initializeApp, type FirebaseApp } from 'firebase/app'
+import { getAuth, type Auth } from 'firebase/auth'
+import { getFirestore, type Firestore } from 'firebase/firestore'
 
-const requiredConfig = {
+const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
   authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
   projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
@@ -11,20 +11,36 @@ const requiredConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 } as const
 
-const missingConfig = Object.entries(requiredConfig)
+const missingConfig = Object.entries(firebaseConfig)
   .filter(([, value]) => !value)
   .map(([key]) => key)
 
-// Do not throw during Next.js static generation. Vercel does not automatically
-// receive local .env.local values; the client displays this error at runtime.
-// Do not throw during Next.js static generation. Vercel does not automatically
-// receive local .env.local values; the client displays this error at runtime.
 export const firebaseConfigError = missingConfig.length > 0
   ? `Firebase configuration is missing: ${missingConfig.join(', ')}`
   : null
 
-const app = getApps().length > 0 ? getApp() : initializeApp(requiredConfig)
+let firebaseApp: FirebaseApp | undefined
+let firebaseAuth: Auth | undefined
+let firestore: Firestore | undefined
 
-export const auth = getAuth(app)
-export const db = getFirestore(app)
-export default app
+function getFirebaseApp() {
+  if (typeof window === 'undefined') {
+    throw new Error('Firebase Auth is only available in the browser.')
+  }
+  if (firebaseConfigError) {
+    throw new Error(firebaseConfigError)
+  }
+  firebaseApp ??= getApps().length > 0 ? getApp() : initializeApp(firebaseConfig)
+  return firebaseApp
+}
+
+export function getFirebaseAuth() {
+  firebaseAuth ??= getAuth(getFirebaseApp())
+  return firebaseAuth
+}
+
+export function getFirebaseFirestore() {
+  firestore ??= getFirestore(getFirebaseApp())
+  return firestore
+}
+
