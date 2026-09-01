@@ -1,0 +1,30 @@
+rules_version = '2';
+
+service firebase.storage {
+  match /b/{bucket}/o {
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function allowedDocumentType() {
+      return request.resource.contentType.matches('application/pdf')
+        || request.resource.contentType.matches('application/msword')
+        || request.resource.contentType.matches('application/vnd.ms-excel')
+        || request.resource.contentType.matches('application/vnd.openxmlformats-officedocument.*')
+        || request.resource.contentType.matches('text/csv');
+    }
+
+    match /projects/{projectId}/documents/{documentId}/{fileName} {
+      allow read: if signedIn();
+      allow create, update: if signedIn()
+        && request.resource.size <= 25 * 1024 * 1024
+        && allowedDocumentType()
+        && request.resource.metadata.uploadedBy == request.auth.uid;
+      allow delete: if signedIn();
+    }
+
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

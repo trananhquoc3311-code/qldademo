@@ -1,6 +1,7 @@
 import { getApp, getApps, initializeApp, type FirebaseApp } from 'firebase/app'
 import { getAuth, type Auth } from 'firebase/auth'
 import { getFirestore, type Firestore } from 'firebase/firestore'
+import { getStorage, type FirebaseStorage } from 'firebase/storage'
 
 // Firebase Web configuration is public client configuration, not a server secret.
 // The environment variables take precedence; fallbacks keep a deployment from
@@ -25,6 +26,7 @@ export const firebaseConfigError = missingConfig.length > 0
 let firebaseApp: FirebaseApp | undefined
 let firebaseAuth: Auth | undefined
 let firestore: Firestore | undefined
+let firebaseStorage: FirebaseStorage | undefined
 
 function getFirebaseApp() {
   if (typeof window === 'undefined') {
@@ -45,4 +47,9 @@ export function getFirebaseAuth() {
 export function getFirebaseFirestore() {
   firestore ??= getFirestore(getFirebaseApp())
   return firestore
+}
+
+export function getFirebaseStorage() {
+  firebaseStorage ??= getStorage(getFirebaseApp())
+  return firebaseStorage
 }
