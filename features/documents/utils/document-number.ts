@@ -1,22 +1,9 @@
 import type { ProjectDocument } from '@/features/documents/types/document'
+import { DOCUMENT_TYPE_OPTIONS, documentTypeLabel, documentCodePrefix } from '@/features/documents/config/document-types'
 
-export const DOCUMENT_TYPE_OPTIONS = [
-  { value: 'meeting_minutes', label: 'Biên bản họp', prefix: 'MOM' },
-  { value: 'correspondence', label: 'Công văn', prefix: 'LTR' },
-  { value: 'weekly_report', label: 'Báo cáo tuần', prefix: 'WRP' },
-  { value: 'monthly_report', label: 'Báo cáo tháng', prefix: 'MRP' },
-  { value: 'audit_report', label: 'Báo cáo kiểm tra/audit', prefix: 'ADP' },
-] as const
+export { DOCUMENT_TYPE_OPTIONS, documentTypeLabel, documentCodePrefix }
 
 type DocumentNumberSource = Pick<ProjectDocument, 'id' | 'documentNumber'>
-
-export function documentTypeLabel(documentType: string): string {
-  return DOCUMENT_TYPE_OPTIONS.find((item) => item.value === documentType)?.label ?? 'Loại khác'
-}
-
-export function documentCodePrefix(documentType: string): string {
-  return DOCUMENT_TYPE_OPTIONS.find((item) => item.value === documentType)?.prefix ?? 'DOC'
-}
 
 export function extractDocumentSequence(value: string, prefix: string): number | null {
   const normalizedValue = value

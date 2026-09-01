@@ -10,7 +10,7 @@ import type {
   UpdatedDocument,
 } from '@/features/documents/types/document'
 import { filterDocuments } from '@/features/documents/utils/document-filters'
-import { DOCUMENT_TYPE_OPTIONS } from '@/features/documents/utils/document-number'
+import { DOCUMENT_TYPE_OPTIONS } from '@/features/documents/config/document-types'
 import { DocumentTable } from '@/features/documents/components/document-table'
 import { DocumentDetails } from '@/features/documents/components/document-details'
 import { CreateDocumentDialog } from '@/features/documents/components/create-document-dialog'

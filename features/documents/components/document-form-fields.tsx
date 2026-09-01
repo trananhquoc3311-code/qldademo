@@ -2,7 +2,7 @@
 
 import type { Dispatch, SetStateAction } from 'react'
 import type { DocumentForm } from '@/features/documents/types/document'
-import { DOCUMENT_TYPE_OPTIONS } from '@/features/documents/utils/document-number'
+import { DOCUMENT_TYPE_OPTIONS } from '@/features/documents/config/document-types'
 import { WORKFLOW_STATUS_OPTIONS } from '@/features/documents/utils/document-status'
 import { DatePickerField } from '@/features/documents/components/date-picker-field'
 import {
